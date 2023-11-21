@@ -11,30 +11,33 @@
 
 size_t partitions(int *array, size_t size, size_t first, size_t last)
 {
-	size_t l_b, u_b;
+	size_t i, j;
 	int tmp, pivot;
 
-	l_b = first;
-	u_b = last;
-	pivot = array[u_b];
+	i = first;
+	pivot = array[last];
 
 
-	while (l_b < u_b)
+	for (j = first; j < last ; j++)
 	{
-
-		if (pivot >= array[l_b])
-			l_b++;
-		if (pivot < array[u_b])
-			u_b--;
-		if (array[l_b] > array[u_b])
+		if (array[i] <= pivot)
+			i++;
+		if (array[j] <= pivot && i < j)
 		{
-			tmp = array[u_b];
-			array[u_b] = array[l_b];
-			array[l_b] = tmp;
+			tmp = array[i];
+			array[i] = array[j];
+			array[j] = tmp;
+			i++;
 			print_array(array, size);
 		}
 	}
-	return (u_b);
+	if (i >= j)
+		return (i);
+	tmp = array[i];
+	array[i] = array[last];
+	array[last] = tmp;
+	print_array(array, size);
+	return (i);
 }
 
 /**
@@ -53,11 +56,14 @@ void quick_sort_r(int *array, size_t size, size_t first, size_t last)
 	if (first < last)
 	{
 		index =  partitions(array, size, first, last);
+		if (index == 0)
+			quick_sort_r(array, size, first, index);
+		else
+			quick_sort_r(array, size, first, index - 1);
 
-		quick_sort_r(array, size, first, index - 1);
 		quick_sort_r(array, size, index + 1, last);
-	}
 
+	}
 }
 
 /**
